@@ -1,7 +1,8 @@
-flask==2.3.3
-flask-wtf==1.2.1
+flask==2.2.5
+werkzeug==2.2.3
+flask-wtf==1.1.1
 flask-login==0.6.2
-flask-sqlalchemy==3.1.1
+flask-sqlalchemy==3.0.3
 markdown==3.5
 python-dotenv==1.0.0
 gunicorn==21.2.0
