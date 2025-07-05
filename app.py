@@ -201,13 +201,14 @@ def create_admin():
             db.session.add(admin)
             db.session.commit()
 
+# Ensure upload directory exists
+os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
+
+# Create database and admin user if they don't exist
+with app.app_context():
+    db.create_all()
+    create_admin()
+
 if __name__ == '__main__':
-    # Ensure upload directory exists
-    os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
-    
-    # Create database and admin user if they don't exist
-    with app.app_context():
-        db.create_all()
-        create_admin()
-    
-    app.run(host='0.0.0.0', port=12000, debug=True)
+    port = int(os.environ.get('PORT', 12000))
+    app.run(host='0.0.0.0', port=port, debug=False)
