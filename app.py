@@ -167,11 +167,17 @@ def register():
             flash('Username already exists. Please choose a different one.', 'danger')
             return redirect(url_for('register'))
         
-        new_user = User(username=username)
+        # Check if this is the first user (will be admin)
+        is_first_user = User.query.count() == 0
+        
+        new_user = User(username=username, is_admin=is_first_user)
         new_user.set_password(password)
         
         db.session.add(new_user)
         db.session.commit()
+        
+        if is_first_user:
+            flash('You are the first user and have been set as the admin!', 'success')
         
         flash('Your account has been created! You can now log in.', 'success')
         return redirect(url_for('login'))
@@ -207,23 +213,14 @@ def logout():
 def markdown_filter(text):
     return markdown.markdown(text, extensions=['fenced_code', 'codehilite'])
 
-# Create admin user if it doesn't exist
-def create_admin():
-    with app.app_context():
-        db.create_all()
-        if not User.query.filter_by(username='TPO').first():
-            admin = User(username='TPO', is_admin=True)
-            admin.set_password('password')  # Change this to a secure password
-            db.session.add(admin)
-            db.session.commit()
+# No longer needed - first user will be admin automatically
 
 # Ensure upload directory exists
 os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
 
-# Create database and admin user if they don't exist
+# Create database tables if they don't exist
 with app.app_context():
     db.create_all()
-    create_admin()
 
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 12000))

@@ -7,9 +7,10 @@
         {% if current_user.is_authenticated and current_user.is_admin %}
             <a href="{{ url_for('new_post') }}" class="btn btn-primary">Create New Post</a>
         {% elif current_user.is_authenticated %}
-            <p>This is TPO's personal blog. Only TPO can create posts.</p>
+            <p>Only the admin can create posts. The first registered user is automatically set as the admin.</p>
         {% else %}
-            <p>Login to view and comment on posts. Only TPO can create new posts.</p>
+            <p>Login to view and comment on posts. Only the admin can create new posts.</p>
+            <p><small>Note: The first person to register becomes the admin with full posting privileges.</small></p>
         {% endif %}
     </div>
 
