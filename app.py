@@ -22,6 +22,7 @@ class User(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(80), unique=True, nullable=False)
     password_hash = db.Column(db.String(128))
+    is_admin = db.Column(db.Boolean, default=False)
     posts = db.relationship('Post', backref='author', lazy=True)
 
     def set_password(self, password):
@@ -62,6 +63,11 @@ def post(post_id):
 @app.route('/post/new', methods=['GET', 'POST'])
 @login_required
 def new_post():
+    # Check if user is admin
+    if not current_user.is_admin:
+        flash('Only administrators can create posts.', 'danger')
+        return redirect(url_for('home'))
+        
     if request.method == 'POST':
         title = request.form['title']
         content = request.form['content']
@@ -86,6 +92,11 @@ def new_post():
 @app.route('/post/<int:post_id>/update', methods=['GET', 'POST'])
 @login_required
 def update_post(post_id):
+    # Check if user is admin
+    if not current_user.is_admin:
+        flash('Only administrators can update posts.', 'danger')
+        return redirect(url_for('home'))
+        
     post = Post.query.get_or_404(post_id)
     if post.author != current_user:
         flash('You do not have permission to edit this post.', 'danger')
@@ -120,6 +131,11 @@ def update_post(post_id):
 @app.route('/post/<int:post_id>/delete', methods=['POST'])
 @login_required
 def delete_post(post_id):
+    # Check if user is admin
+    if not current_user.is_admin:
+        flash('Only administrators can delete posts.', 'danger')
+        return redirect(url_for('home'))
+        
     post = Post.query.get_or_404(post_id)
     if post.author != current_user:
         flash('You do not have permission to delete this post.', 'danger')
@@ -196,7 +212,7 @@ def create_admin():
     with app.app_context():
         db.create_all()
         if not User.query.filter_by(username='TPO').first():
-            admin = User(username='TPO')
+            admin = User(username='TPO', is_admin=True)
             admin.set_password('password')  # Change this to a secure password
             db.session.add(admin)
             db.session.commit()

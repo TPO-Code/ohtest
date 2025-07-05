@@ -4,10 +4,12 @@
     <div class="jumbotron p-4 bg-light rounded-3 mb-4">
         <h1 class="display-4">Welcome to TPO's AI Python Blog</h1>
         <p class="lead">Exploring the world of AI and Python programming</p>
-        {% if current_user.is_authenticated %}
+        {% if current_user.is_authenticated and current_user.is_admin %}
             <a href="{{ url_for('new_post') }}" class="btn btn-primary">Create New Post</a>
+        {% elif current_user.is_authenticated %}
+            <p>This is TPO's personal blog. Only TPO can create posts.</p>
         {% else %}
-            <p>Login to create your own posts!</p>
+            <p>Login to view and comment on posts. Only TPO can create new posts.</p>
         {% endif %}
     </div>
 
