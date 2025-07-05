@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <div class="card">
+        <div class="card-body">
+            <h1 class="card-title">{% if post %}Update Post{% else %}Create Post{% endif %}</h1>
+            <form method="POST" enctype="multipart/form-data">
+                <div class="mb-3">
+                    <label for="title" class="form-label">Title</label>
+                    <input type="text" class="form-control" id="title" name="title" required value="{% if post %}{{ post.title }}{% endif %}">
+                </div>
+                <div class="mb-3">
+                    <label for="content" class="form-label">Content (Markdown supported)</label>
+                    <textarea class="form-control" id="content" name="content" rows="10" required>{% if post %}{{ post.content }}{% endif %}</textarea>
+                    <small class="text-muted">
+                        You can use Markdown to format your post. 
+                        <a href="#" data-bs-toggle="collapse" data-bs-target="#markdownHelp">Show Markdown help</a>
+                    </small>
+                    <div class="collapse mt-2" id="markdownHelp">
+                        <div class="card card-body">
+                            <h5>Markdown Cheat Sheet</h5>
+                            <ul>
+                                <li><code># Heading 1</code></li>
+                                <li><code>## Heading 2</code></li>
+                                <li><code>**bold text**</code></li>
+                                <li><code>*italic text*</code></li>
+                                <li><code>[link text](https://example.com)</code></li>
+                                <li><code>![alt text](image.jpg)</code></li>
+                                <li><code>- list item</code></li>
+                                <li><code>1. numbered item</code></li>
+                                <li>Code blocks:
+<pre><code>```python
+def hello_world():
+    print("Hello, World!")
+```</code></pre>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <label for="image" class="form-label">Image (optional)</label>
+                    <input type="file" class="form-control" id="image" name="image" accept="image/*">
+                    {% if post and post.image_filename %}
+                        <div class="mt-2">
+                            <p>Current image:</p>
+                            <img src="{{ url_for('static', filename='images/' + post.image_filename) }}" alt="Current post image" style="max-height: 200px;" class="img-thumbnail">
+                        </div>
+                    {% endif %}
+                </div>
+                <div class="mb-3">
+                    <button type="submit" class="btn btn-primary">{% if post %}Update{% else %}Create{% endif %} Post</button>
+                    <a href="{{ url_for('home') }}" class="btn btn-outline-secondary">Cancel</a>
+                </div>
+            </form>
+        </div>
+    </div>
+{% endblock %}

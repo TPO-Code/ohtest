@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <div class="jumbotron p-4 bg-light rounded-3 mb-4">
+        <h1 class="display-4">Welcome to TPO's AI Python Blog</h1>
+        <p class="lead">Exploring the world of AI and Python programming</p>
+        {% if current_user.is_authenticated %}
+            <a href="{{ url_for('new_post') }}" class="btn btn-primary">Create New Post</a>
+        {% else %}
+            <p>Login to create your own posts!</p>
+        {% endif %}
+    </div>
+
+    <div class="row">
+        {% for post in posts %}
+            <div class="col-md-6 mb-4">
+                <div class="card h-100">
+                    {% if post.image_filename %}
+                        <img src="{{ url_for('static', filename='images/' + post.image_filename) }}" class="card-img-top" alt="Post image" style="height: 200px; object-fit: cover;">
+                    {% endif %}
+                    <div class="card-body">
+                        <h5 class="card-title">{{ post.title }}</h5>
+                        <p class="card-text text-muted">
+                            <small>Posted by {{ post.author.username }} on {{ post.date_posted.strftime('%Y-%m-%d') }}</small>
+                        </p>
+                        <p class="card-text">{{ post.content[:150] }}{% if post.content|length > 150 %}...{% endif %}</p>
+                        <a href="{{ url_for('post', post_id=post.id) }}" class="btn btn-outline-primary">Read More</a>
+                    </div>
+                </div>
+            </div>
+        {% else %}
+            <div class="col-12">
+                <div class="alert alert-info">
+                    No posts found. Be the first to create a post!
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+{% endblock %}
